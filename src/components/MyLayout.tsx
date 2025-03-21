@@ -5,12 +5,12 @@ import {
   UserOutlined,
   VideoCameraOutlined,
   DashboardOutlined,
-} from '@ant-design/icons';
-import { Breadcrumb, Dropdown, Layout, Menu, message } from 'antd';
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { defaultImg as logo } from '../utils/tools';
-import { context } from './AppProvider';
+} from "@ant-design/icons";
+import { Breadcrumb, Dropdown, Layout, Menu, message } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { defaultImg as logo } from "../utils/tools";
+import { context } from "./AppProvider";
 
 const { Header, Sider, Content } = Layout;
 
@@ -55,77 +55,94 @@ const findDeepPath = (key: string, menus: any) => {
   // 根据当前传递的key值过滤数据，获取到当前用来显示的menu item数据
   const tmpData = result.filter((item: any) => key.includes(item.key));
   if (tmpData.length > 0) {
-    return [{ label: '首页', key: '/admin/dashboard' }, ...tmpData];
+    return [{ label: "首页", key: "/admin/dashboard" }, ...tmpData];
   }
   return [];
 };
 
 const MyLayout = ({ children }: any) => {
   const { menus } = useContext(context);
-
   const [collapsed, setCollapsed] = useState(false);
   const [breadcrumbs, setBreadcrumbs] = useState<any>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { pathname } = useLocation(); // 获取location中的数据
-  const tmpOpenKeys = findOpenKeys(pathname, menus);
+  const { pathname } = useLocation();
 
-  // 监听pathname的改变，重新这是面包屑数据
+  // 监听路由变化，更新菜单选中状态
   useEffect(() => {
+    const currentKeys = findOpenKeys(pathname, menus);
+    setSelectedKeys(currentKeys);
+    setOpenKeys(currentKeys);
     setBreadcrumbs(findDeepPath(pathname, menus));
-  }, [pathname]);
+  }, [pathname, menus]);
+
   return (
     <Layout
-      style={{ width: '100vw', height: '100vh' }}
-      id='components-layout-demo-custom-trigger'
+      style={{ width: "100vw", height: "100vh" }}
+      id="components-layout-demo-custom-trigger"
     >
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className='logo'>
-          <img src={logo} alt='好大夫' />
+        <div className="logo">
+          <img src={logo} alt="牙医生" />
         </div>
         <Menu
-          theme='light'
-          mode='inline'
-          defaultOpenKeys={tmpOpenKeys}
-          defaultSelectedKeys={tmpOpenKeys}
+          theme="light"
+          mode="inline"
+          selectedKeys={selectedKeys}
+          openKeys={openKeys}
           onClick={({ key }) => {
-            // alert(key);
+            setSelectedKeys([key]);
             navigate(key);
+          }}
+          onOpenChange={(keys) => {
+            setOpenKeys(keys);
           }}
           items={menus}
         />
       </Sider>
       <Layout
-        className='site-layout'
-        style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
+        className="site-layout"
+        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
       >
-        <Header className='site-layout-background' style={{ padding: 0 }}>
+        <Header className="site-layout-background" style={{ padding: 0 }}>
           {React.createElement(
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
             {
-              className: 'trigger',
+              className: "trigger",
               onClick: () => setCollapsed(!collapsed),
             }
           )}
-          <span className='app-title'>好大夫平台管理系统</span>
+          <span className="app-title">牙医生平台管理系统</span>
           <Dropdown
             menu={{
               items: [
                 {
-                  label: '个人中心',
-                  key: 'userCenter',
+                  label: (
+                    <div
+                      onClick={() => {
+                        navigate("/admin/info");
+                        setSelectedKeys(["/admin/info"]);
+                      }}
+                      style={{ width: "100%", padding: "5px 0" }}
+                    >
+                      个人中心
+                    </div>
+                  ),
+                  key: "userCenter",
                 },
                 {
                   label: (
-                    <span
+                    <div
                       onClick={() => {
-                        // console.log('退出');
-                        navigate('/');
+                        navigate("/");
                       }}
+                      style={{ width: "100%", padding: "5px 0" }}
                     >
                       退出
-                    </span>
+                    </div>
                   ),
-                  key: 'logOut',
+                  key: "logOut",
                 },
               ],
             }}
@@ -133,26 +150,31 @@ const MyLayout = ({ children }: any) => {
             <img
               src={logo}
               style={{
-                width: '30px',
-                borderRadius: '50%',
-                float: 'right',
-                marginTop: '16px',
-                marginRight: '20px',
+                width: "30px",
+                borderRadius: "50%",
+                float: "right",
+                marginTop: "16px",
+                marginRight: "20px",
+                cursor: "pointer",
               }}
             />
           </Dropdown>
         </Header>
         <Content
-          className='site-layout-background'
+          className="site-layout-background"
           style={{
-            margin: '8px',
+            margin: "8px",
             padding: 24,
             minHeight: 280,
-            overflow: 'auto',
+            overflow: "auto",
             flex: 1,
           }}
         >
-          <Breadcrumb>
+          <Breadcrumb
+            style={{
+              marginBottom: "16px",
+            }}
+          >
             {breadcrumbs.map((item: any) => (
               <Breadcrumb.Item key={item.key}>{item.label}</Breadcrumb.Item>
             ))}

@@ -1,86 +1,167 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
 // @ts-ignore
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
-import { getToken, serverUrl } from './tools';
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+import { getToken, serverUrl } from "./tools";
 
+// 定义自定义配置
+interface CustomConfig {
+  showProgress?: boolean; // 是否显示进度条
+}
+
+// 定义请求参数接口
+interface RequestOptions {
+  body?: any; // 请求体参数 (application/json)
+  query?: any; // URL 查询参数 (?key=value)
+  params?: any; // URL 路径参数 (/api/:id)
+  config?: AxiosRequestConfig & CustomConfig; // axios配置与自定义配置
+}
+
+// 创建axios实例
 const instance = axios.create({
   baseURL: serverUrl, // 请求的基础地址
   timeout: 5000,
   withCredentials: true,
 });
 
-// Add a request interceptor，发起请求之前执行
+// 添加请求拦截器
 instance.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
+    // 添加token到请求头
     // @ts-ignore
     config.headers.token = getToken();
-    NProgress.start(); // 启动loading
+
+    // 显示加载进度
+    // @ts-ignore
+    if (config.customConfig?.showProgress !== false) {
+      NProgress.start();
+    }
+
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor，请求返会之后执行
+// 添加响应拦截器
 instance.interceptors.response.use(
   function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+    // 关闭加载进度
     NProgress.done();
     return response;
   },
   function (error) {
-    NProgress.done(); // 关闭loading
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+    // 关闭加载进度
+    NProgress.done();
     return Promise.reject(error);
   }
 );
 
 /**
- * get请求
- * @param url     地址
- * @param params  参数
- * @returns
+ * 处理URL中的路径参数
+ * 例如：/api/users/:id 会被替换为 /api/users/123
+ * @param url URL模板
+ * @param params 路径参数对象
+ * @returns 替换后的URL
  */
-export const get = (url: string, params: any = {}) =>
-  instance.get(url, { params }).then((res) => res.data);
+const processUrlParams = (url: string, params?: any): string => {
+  if (!params) return url;
+
+  let processedUrl = url;
+  Object.keys(params).forEach((key) => {
+    processedUrl = processedUrl.replace(
+      `:${key}`,
+      encodeURIComponent(params[key])
+    );
+  });
+
+  return processedUrl;
+};
 
 /**
- * post请求
- * @param url   地址
- * @param data  参数
- * @returns
+ * 通用请求方法
+ * @param method 请求方法
+ * @param url 请求地址
+ * @param options 请求选项
+ * @returns Promise
  */
-export const post = (url: string, data: any = {}) =>
-  instance.post(url, data).then((res) => res.data);
+const request = async (
+  method: string,
+  url: string,
+  options: RequestOptions = {}
+) => {
+  const { body, query, params, config = {} } = options;
+  const { showProgress = true, ...axiosConfig } = config as CustomConfig &
+    AxiosRequestConfig;
+
+  // 处理URL路径参数
+  const processedUrl = processUrlParams(url, params);
+
+  try {
+    const response = await instance.request({
+      method,
+      url: processedUrl,
+      params: query, // 查询参数
+      data: body, // 请求体
+      ...axiosConfig,
+      // @ts-ignore
+      customConfig: { showProgress },
+    });
+
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 
 /**
- * put请求
- * @param url   地址
- * @param data  参数
- * @returns
+ * GET请求
+ * @param url 地址
+ * @param options 选项，包含 query(查询参数) 和 params(路径参数)
+ * @returns Promise
  */
-export const put = (url: string, data: any = {}) =>
-  instance.put(url, data).then((res) => res.data);
+export const get = (url: string, options: RequestOptions = {}) =>
+  request("get", url, options);
 
 /**
- * patch请求
- * @param url   地址
- * @param data  参数
- * @returns
+ * POST请求
+ * @param url 地址
+ * @param body 请求体数据
+ * @param options 其他选项
+ * @returns Promise
  */
-export const patch = (url: string, data: any = {}) =>
-  instance.patch(url, data).then((res) => res.data);
+export const post = (url: string, body?: any, options: RequestOptions = {}) =>
+  request("post", url, { ...options, body });
 
 /**
- * delete请求
- * @param url   地址
- * @returns
+ * PUT请求
+ * @param url 地址
+ * @param body 请求体数据
+ * @param options 其他选项
+ * @returns Promise
  */
-export const del = (url: string) =>
-  instance.delete(url).then((res) => res.data);
+export const put = (url: string, body?: any, options: RequestOptions = {}) =>
+  request("put", url, { ...options, body });
+
+/**
+ * PATCH请求
+ * @param url 地址
+ * @param body 请求体数据
+ * @param options 其他选项
+ * @returns Promise
+ */
+export const patch = (url: string, body?: any, options: RequestOptions = {}) =>
+  request("patch", url, { ...options, body });
+
+/**
+ * DELETE请求
+ * @param url 地址
+ * @param options 选项
+ * @returns Promise
+ */
+export const del = (url: string, options: RequestOptions = {}) =>
+  request("delete", url, options);
+
+// 导出默认请求函数，支持自定义方法
+export default request;

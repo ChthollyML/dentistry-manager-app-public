@@ -9,22 +9,22 @@ import {
   message,
   Pagination,
   Popconfirm,
-} from 'antd';
+} from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
-} from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import MyUpload from '../../components/MyUpload';
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import MyUpload from "../../components/MyUpload";
 import {
   loadDataAPI,
   insertAPI,
   updateByIdAPI,
   delByIdAPI,
-} from '../../services/medicine-categories';
-import { dalImg } from '../../utils/tools';
+} from "../../api/medicine-categories";
+import { dalImg } from "../../utils/tools";
 
 function MedicineCategories() {
   const [isShow, setIsShow] = useState(false); // 控制modal显示和隐藏
@@ -32,8 +32,8 @@ function MedicineCategories() {
   const [query, setQuery] = useState({}); // 查询条件
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0); // 总数量
-  const [currentId, setCurrentId] = useState(''); // 当前id，如果为空表示新增
-  const [imageUrl, setImageUrl] = useState<string>(''); // 上传之后的数据
+  const [currentId, setCurrentId] = useState(""); // 当前id，如果为空表示新增
+  const [imageUrl, setImageUrl] = useState<string>(""); // 上传之后的数据
 
   useEffect(() => {
     loadDataAPI(query).then((res) => {
@@ -45,18 +45,18 @@ function MedicineCategories() {
   useEffect(() => {
     if (!isShow) {
       // 关闭弹窗之后重置数据
-      setCurrentId('');
-      setImageUrl('');
+      setCurrentId("");
+      setImageUrl("");
     }
   }, [isShow]);
   return (
     <>
       <Card
-        title='药品分类'
+        title="药品分类"
         extra={
           <>
             <Button
-              type='primary'
+              type="primary"
               icon={<PlusOutlined />}
               onClick={() => {
                 setIsShow(true);
@@ -65,67 +65,67 @@ function MedicineCategories() {
           </>
         }
       >
-        <Space direction='vertical' style={{ width: '100%' }}>
+        <Space direction="vertical" style={{ width: "100%" }}>
           <Form
-            layout='inline'
+            layout="inline"
             onFinish={(v) => {
               // message.success('查询成功');
               setQuery(v);
             }}
           >
-            <Form.Item label='名字' name='name'>
-              <Input placeholder='请输入关键词' allowClear />
+            <Form.Item label="名字" name="name">
+              <Input placeholder="请输入关键词" allowClear />
             </Form.Item>
             <Form.Item>
               <Button
-                htmlType='submit'
-                type='primary'
+                htmlType="submit"
+                type="primary"
                 icon={<SearchOutlined />}
               />
             </Form.Item>
           </Form>
           <Table
             dataSource={data}
-            rowKey='id'
+            rowKey="id"
             columns={[
               {
-                title: '序号',
+                title: "序号",
                 width: 80,
-                align: 'center',
+                align: "center",
                 render(v, r, i) {
                   return <>{i + 1}</>;
                 },
               },
               {
-                title: '名字',
-                dataIndex: 'name',
+                title: "名字",
+                dataIndex: "name",
                 width: 180,
               },
               {
-                title: '主图',
+                title: "主图",
                 width: 120,
-                align: 'center',
+                align: "center",
                 render(v, r: any) {
                   return (
-                    <img className='t-img' src={dalImg(r.image)} alt={r.name} />
+                    <img className="t-img" src={dalImg(r.image)} alt={r.name} />
                   );
                 },
               },
               {
-                title: '简介',
-                dataIndex: 'desc',
+                title: "简介",
+                dataIndex: "desc",
               },
               {
-                title: '操作',
-                align: 'center',
+                title: "操作",
+                align: "center",
                 width: 110,
                 render(v, r: any) {
                   return (
                     <Space>
                       <Button
-                        type='primary'
+                        type="primary"
                         icon={<EditOutlined />}
-                        size='small'
+                        size="small"
                         onClick={() => {
                           setIsShow(true);
                           setCurrentId(r.id);
@@ -134,16 +134,16 @@ function MedicineCategories() {
                         }}
                       />
                       <Popconfirm
-                        title='是否确认删除此项?'
+                        title="是否确认删除此项?"
                         onConfirm={async () => {
                           await delByIdAPI(r.id);
                           setQuery({}); // 重新加载数据
                         }}
                       >
                         <Button
-                          type='primary'
+                          type="primary"
                           icon={<DeleteOutlined />}
-                          size='small'
+                          size="small"
                           danger
                         />
                       </Popconfirm>
@@ -167,7 +167,7 @@ function MedicineCategories() {
         </Space>
       </Card>
       <Modal
-        title='编辑'
+        title="编辑"
         open={isShow}
         // 点击遮罩层时不关闭
         maskClosable={false}
@@ -191,7 +191,7 @@ function MedicineCategories() {
               await insertAPI({ ...v, image: imageUrl }); // 新增
             }
 
-            message.success('保存成功');
+            message.success("保存成功");
             setIsShow(false);
             setQuery({}); // 重置查询条件，取数据
           }}
@@ -199,22 +199,22 @@ function MedicineCategories() {
           form={myForm}
         >
           <Form.Item
-            label='名字'
-            name='name'
+            label="名字"
+            name="name"
             rules={[
               {
                 required: true,
-                message: '请输入名字',
+                message: "请输入名字",
               },
             ]}
           >
-            <Input placeholder='请输入名字' />
+            <Input placeholder="请输入名字" />
           </Form.Item>
-          <Form.Item label='主图'>
+          <Form.Item label="主图">
             <MyUpload imageUrl={imageUrl} setImageUrl={setImageUrl} />
           </Form.Item>
-          <Form.Item label='简介' name='desc'>
-            <Input.TextArea placeholder='请输入简介' />
+          <Form.Item label="简介" name="desc">
+            <Input.TextArea placeholder="请输入简介" />
           </Form.Item>
         </Form>
       </Modal>

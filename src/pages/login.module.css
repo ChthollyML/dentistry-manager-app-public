@@ -1,0 +1,389 @@
+/* 口腔诊所主题色彩 */
+:root {
+  --primary-color: #1e88e5; /* 蓝色 - 代表清洁、专业 */
+  --secondary-color: #26c6da; /* 浅蓝绿色 - 代表清新、健康 */
+  --accent-color: #5e35b1; /* 紫色 - 代表高端、科技 */
+  --light-color: #e3f2fd; /* 浅蓝背景 - 干净整洁 */
+  --white-color: #ffffff;
+  --text-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --input-bg: #f9f9f9;
+  --input-focus-bg: #ffffff;
+  --input-border: #e8e8e8;
+  --input-focus-border: #1e88e5;
+  --input-focus-shadow: rgba(30, 136, 229, 0.2);
+}
+
+.loginContainer {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--light-color) 0%,
+    var(--white-color) 100%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加背景装饰 */
+.loginContainer::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(38, 198, 218, 0.1) 0%,
+    rgba(38, 198, 218, 0) 70%
+  );
+  z-index: 0;
+}
+
+.loginContainer::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(94, 53, 177, 0.1) 0%,
+    rgba(94, 53, 177, 0) 70%
+  );
+  z-index: 0;
+}
+
+.loginCard {
+  width: 550px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  background-color: var(--white-color);
+  transition: all 0.3s ease;
+  padding: 35px;
+  position: relative;
+  z-index: 1;
+}
+
+.loginCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.cardTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border-radius: 3px;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 50%;
+  padding: 10px;
+  background-color: var(--white-color);
+  box-shadow: 0 5px 15px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* 自定义Tabs样式 */
+.customTabs {
+  margin-bottom: 20px;
+}
+
+.customTabs :global(.ant-tabs-nav) {
+  margin-bottom: 12px;
+}
+
+.customTabs :global(.ant-tabs-tab) {
+  font-size: 18px;
+  padding: 12px 30px;
+  transition: all 0.3s ease;
+}
+
+.customTabs :global(.ant-tabs-tab-active) {
+  font-weight: 600;
+}
+
+.customTabs :global(.ant-tabs-ink-bar) {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+}
+
+/* 表单样式 */
+.formItem {
+  margin-bottom: 12px;
+}
+
+.formItem :global(.ant-form-item-label) {
+  font-weight: 500;
+}
+
+.formItem :global(.ant-form-item-label) > label {
+  font-size: 15px;
+  height: 30px;
+  color: var(--text-color);
+}
+
+/* 统一输入框样式 */
+.formItem :global(.ant-input),
+.formItem :global(.ant-select-selector) {
+  border-radius: 10px;
+  padding: 8px 15px;
+  height: 40px;
+  border: 1px solid var(--input-border);
+  transition: all 0.3s ease;
+  font-size: 15px;
+  background-color: var(--input-bg);
+}
+
+/* 密码输入框容器样式 */
+.formItem :global(.ant-input-affix-wrapper) {
+  background-color: var(--input-bg);
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  transition: all 0.3s ease;
+  height: auto;
+  padding: 0;
+}
+
+/* 密码输入框内部输入区域样式 */
+.formItem :global(.ant-input-affix-wrapper) > :global(.ant-input) {
+  background-color: transparent;
+  padding: 12px 15px;
+  font-size: 15px;
+}
+
+/* 密码输入框聚焦状态 */
+.formItem :global(.ant-input-affix-wrapper-focused) {
+  box-shadow: 0 0 0 2px var(--input-focus-shadow);
+  border-color: var(--input-focus-border);
+  background-color: var(--input-focus-bg);
+}
+
+/* 密码输入框悬停状态 */
+.formItem :global(.ant-input-affix-wrapper:hover) {
+  border-color: var(--input-focus-border);
+}
+
+/* 普通输入框聚焦状态 */
+.formItem :global(.ant-input:focus),
+.formItem :global(.ant-select-selector:focus) {
+  box-shadow: 0 0 0 2px var(--input-focus-shadow);
+  border-color: var(--input-focus-border);
+  background-color: var(--input-focus-bg);
+}
+
+/* 普通输入框悬停状态 */
+.formItem :global(.ant-input:hover),
+.formItem :global(.ant-select-selector:hover) {
+  border-color: var(--input-focus-border);
+}
+
+/* 密码可见性图标样式 */
+.formItem :global(.ant-input-password-icon) {
+  color: var(--primary-color);
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+/* 下拉选择框样式 */
+.formItem :global(.ant-select) {
+  border: 1px solid var(--input-border);
+  width: 100%;
+}
+
+.formItem :global(.ant-select-selector) {
+  display: flex;
+  align-items: center;
+}
+
+.formItem :global(.ant-select-selection-placeholder) {
+  color: #bbb;
+}
+
+.formItem :global(.ant-select-arrow) {
+  color: var(--primary-color);
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.formItem :global(.ant-select-focused) :global(.ant-select-selector) {
+  box-shadow: 0 0 0 2px var(--input-focus-shadow) !important;
+  border-color: var(--input-focus-border) !important;
+  background-color: var(--input-focus-bg) !important;
+}
+
+.formItem :global(.ant-select-item) {
+  padding: 10px 15px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.formItem :global(.ant-select-item-option-selected) {
+  background-color: rgba(30, 136, 229, 0.1);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.formItem :global(.ant-select-item-option-active) {
+  background-color: rgba(30, 136, 229, 0.05);
+}
+
+.formItem :global(.ant-select-dropdown) {
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+}
+
+.formItem :global(.ant-form-item-explain-error) {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+/* 按钮样式 */
+.submitButton {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border: none;
+  box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 136, 229, 0.4);
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+
+.submitButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.3);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.tabContent {
+  animation: fadeIn 0.5s ease forwards;
+  padding: 0 5px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .loginCard {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .cardTitle {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .customTabs :global(.ant-tabs-tab) {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .formItem :global(.ant-form-item-label) > label {
+    font-size: 14px;
+  }
+
+  .formItem :global(.ant-input),
+  .formItem :global(.ant-input-affix-wrapper) > :global(.ant-input),
+  .formItem :global(.ant-select-selector) {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .submitButton {
+    height: 44px;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .loginCard {
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .loginCard {
+    max-width: 650px;
+  }
+}
