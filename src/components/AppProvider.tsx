@@ -12,6 +12,7 @@ import ClinicAuditList from "../pages/clinic/clinicAuditList";
 import DoctorsList from "../pages/doctor/doctorsList";
 import ClinicInfo from "../pages/clinic/clinicInfo";
 import ClinicApplication from "../pages/clinic/clinicApplication";
+import ClinicApplicationList from "../pages/clinic/clinicApplicationList";
 export const context = createContext<any>({});
 
 // 如果需要再加新的页面，只需要写好组件之后 改这个数组就好
@@ -54,10 +55,16 @@ const sideMenuData = [
         element: <ClinicInfo />,
       },
       {
-        label: "诊所申请",
+        label: "信息修改",
         key: "/admin/clinic/application",
         roles: ["clinic_manager"],
         element: <ClinicApplication />,
+      },
+      {
+        label: "审核记录",
+        key: "/admin/clinic/audit-log",
+        roles: ["clinic_manager"],
+        element: <ClinicApplicationList />,
       },
     ],
   },

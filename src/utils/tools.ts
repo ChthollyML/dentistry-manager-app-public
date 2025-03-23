@@ -39,4 +39,4 @@ export const dalImg = (img: string) => {
   return defaultImg;
 };
 
-export const uploadImg = "/api/upload";
+export const uploadImg = serverUrl + "/upload/file";

@@ -301,7 +301,6 @@ function DoctorsList() {
 
             const submitData = {
               ...restValues,
-              avatar: imageUrl,
               qualifications: {
                 degree,
                 license,
@@ -310,10 +309,10 @@ function DoctorsList() {
 
             try {
               if (currentId) {
-                await updateDoctor(currentId, submitData);
+                await updateDoctor({ id: currentId, ...submitData });
                 message.success("更新成功");
               } else {
-                await addDoctor(submitData);
+                await addDoctor({ ...submitData, clinic_id: clinicId });
                 message.success("添加成功");
               }
               setIsShow(false);
@@ -334,16 +333,6 @@ function DoctorsList() {
           >
             <Input placeholder="请输入医生姓名" />
           </Form.Item>
-
-          <Form.Item
-            label="诊所ID"
-            name="clinic_id"
-            rules={[{ required: true, message: "请输入诊所ID" }]}
-            key="clinic_id"
-          >
-            <InputNumber placeholder="请输入诊所ID" style={{ width: "100%" }} />
-          </Form.Item>
-
           <Form.Item label="头像" key="avatar">
             <MyUpload imageUrl={imageUrl} setImageUrl={setImageUrl} />
           </Form.Item>

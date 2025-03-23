@@ -6,7 +6,8 @@ import {
   submitClinicApplication,
   updateClinicApplication,
 } from "../../api/clinic";
-import { dalImg, uploadImg } from "../../utils/tools";
+import { uploadImg } from "../../api/upload";
+import { dalImg } from "../../utils/tools";
 
 interface Clinic {
   clinic_id: number;
@@ -63,18 +64,20 @@ function ClinicApplication() {
         taxCertificate,
         ...restValues
       } = values;
-
       const submitData = {
         ...restValues,
         qualifications: {
-          medicalInstitutionLicense,
-          businesLicense,
-          taxCertificate,
+          medicalInstitutionLicense: qualifications.medicalInstitutionLicense,
+          businesLicense: qualifications.businesLicense,
+          taxCertificate: qualifications.taxCertificate,
         },
       };
 
       if (clinic) {
-        await updateClinicApplication(submitData);
+        await updateClinicApplication({
+          clinic_id: clinic.clinic_id,
+          ...submitData,
+        });
         message.success("更新申请成功");
       } else {
         await submitClinicApplication(submitData);
@@ -89,18 +92,49 @@ function ClinicApplication() {
   };
 
   const uploadProps = {
-    name: "file",
-    action: uploadImg,
-    headers: {
-      authorization: `Bearer ${sessionStorage.getItem("token")}`,
-    },
-    onChange(info: any) {
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} 上传成功`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} 上传失败`);
+    customRequest: async (options: any) => {
+      const { file, onProgress, onSuccess, onError } = options;
+
+      // 验证文件类型
+      const isImage = file.type.startsWith("image/");
+      if (!isImage) {
+        message.error("只能上传图片文件！");
+        onError(new Error("文件类型错误"));
+        return;
+      }
+
+      // 验证文件大小（限制为5MB）
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error("图片大小不能超过5MB！");
+        onError(new Error("文件大小超限"));
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await uploadImg(formData);
+        if (response.data && typeof response.data === "string") {
+          onSuccess(response.data);
+          setQualifications((prev) => ({
+            ...prev,
+            [options.data.fieldName]: response.data,
+          }));
+          message.success(`${file.name} 上传成功`);
+        } else {
+          throw new Error("上传返回数据格式错误");
+        }
+      } catch (error) {
+        console.error("上传失败:", error);
+        onError(error);
+        message.error(`${file.name} 上传失败`);
       }
     },
+    accept: "image/*",
+    maxCount: 1,
+    showUploadList: false,
   };
 
   return (
@@ -154,7 +188,10 @@ function ClinicApplication() {
                 style={{ maxWidth: 200, marginBottom: 8 }}
               />
             )}
-            <Upload {...uploadProps}>
+            <Upload
+              {...uploadProps}
+              data={{ fieldName: "medicalInstitutionLicense" }}
+            >
               <Button icon={<PlusOutlined />}>上传医疗机构执业许可证</Button>
             </Upload>
           </Space>
@@ -169,7 +206,7 @@ function ClinicApplication() {
                 style={{ maxWidth: 200, marginBottom: 8 }}
               />
             )}
-            <Upload {...uploadProps}>
+            <Upload {...uploadProps} data={{ fieldName: "businesLicense" }}>
               <Button icon={<PlusOutlined />}>上传营业执照</Button>
             </Upload>
           </Space>
@@ -184,7 +221,7 @@ function ClinicApplication() {
                 style={{ maxWidth: 200, marginBottom: 8 }}
               />
             )}
-            <Upload {...uploadProps}>
+            <Upload {...uploadProps} data={{ fieldName: "taxCertificate" }}>
               <Button icon={<PlusOutlined />}>上传税务登记证</Button>
             </Upload>
           </Space>

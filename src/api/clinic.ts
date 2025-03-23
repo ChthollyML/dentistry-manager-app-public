@@ -1,4 +1,4 @@
-import { get, post, put, del } from "../utils/request";
+import { get, post, put, del, patch } from "../utils/request";
 
 // 获取诊所列表
 export const getClinicList = (params?: any) =>
@@ -29,8 +29,7 @@ export const getClinicAuditLogs = (params?: any) =>
   get("/audit", { query: params });
 
 // 审核诊所
-export const auditClinic = (id: string, data: any) =>
-  post(`/audit/admin`, data);
+export const auditClinic = (data: any) => post(`/audit/admin`, data);
 
 // 提交诊所申请
 export const submitClinicApplication = (data: any) =>
@@ -38,4 +37,11 @@ export const submitClinicApplication = (data: any) =>
 
 // 更新诊所申请
 export const updateClinicApplication = (data: any) =>
-  put(`/audit/clinicAdmin`, data);
+  patch(`/clinic/update`, data);
+
+// 获取诊所的申请记录
+export const getMyClinicApplications = (clinic_id: number) =>
+  get(`/audit/${clinic_id}`);
+
+// 撤销记录
+export const withdrawApplication = (log_id: number) => del(`/audit/${log_id}`);
